@@ -52,4 +52,4 @@ app.post("/mailtrap", function (req, res) {
   });
 });
 
-server.listen(5000);
+server.listen(process.env.PORT || 5000);
