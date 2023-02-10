@@ -4,8 +4,8 @@
   "description": "Send email from test applications to mailtrap",
   "main": "index.ts",
   "scripts": {
-    "start": "nodemon -r dotenv/config src/index.ts",
-    "start-prod":"ts-node -r dotenv/config src/index.ts",
+    "dev": "nodemon -r dotenv/config src/index.ts",
+    "start":"ts-node -r dotenv/config src/index.ts",
     "lint": "eslint . --fix",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
