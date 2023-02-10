@@ -7,7 +7,6 @@ import axios from "axios";
 const app = express();
 const server = http.createServer(app);
 
-
 app.use(bodyParser.urlencoded({ extended: false}));
 app.use(bodyParser.json());
 app.use(cors())
@@ -15,7 +14,13 @@ app.use(cors())
 
 // USER ENDPOINTS
 app.post("/mailtrap", function (req, res) {
-  console.log('in here');
+  console.log("mailtrap POST req")
+  if (!req.body) {
+    return res.status(400).send('No data sent');
+  }
+  if (!req.body.inboxId || !req.body.apiToken || !req.body.subject || !req.body.messageHtml) {
+    return res.status(400).send('Missing data');
+  }
   const inboxId = req.body.inboxId;
   const apiToken = req.body.apiToken;
   const subject = req.body.subject;
@@ -39,13 +44,11 @@ app.post("/mailtrap", function (req, res) {
       category: 'API Test'
     }
   };
-  
   axios.request(options).then(function (response) {
-    console.log(response.status)
-    return res.end();
-  }).catch(function (error) {
-    console.log(error)
-    return res.status(error.status || 500);
+    return res.send("sucessfully sent");
+  }).catch(err => {
+    console.log(err)
+    return res.status(err.status || 500).send('Error sending email, please double check your inboxId and apiToken');
   });
 });
 
