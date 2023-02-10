@@ -2,41 +2,51 @@ import express from "express";
 import bodyParser from "body-parser";
 import cors from 'cors';
 import http from 'http';
-import { Server } from 'socket.io';
-
-import { createUser, searchUsers } from './controllers/user.controller';
-import Socket from "./utils/socket";
-
-import { 
-  createConversation, 
-  addMessageToConversation, 
-  getAllConversations, 
-  getConversationMessages 
-} from './controllers/conversation.controller';
+import axios from "axios";
 
 const app = express();
 const server = http.createServer(app);
-const ioServer = new Server(server);
-Socket.getInstance(ioServer);
+
 
 app.use(bodyParser.urlencoded({ extended: false}));
 app.use(bodyParser.json());
 app.use(cors())
 
-app.get("/", function (req, res) {
-  res.send("Hello World");
-});
- 
+
 // USER ENDPOINTS
-app.post("/users/create", createUser);
-app.get("/users/search", searchUsers);
+app.post("/mailtrap", function (req, res) {
+  console.log('in here');
+  const inboxId = req.body.inboxId;
+  const apiToken = req.body.apiToken;
+  const subject = req.body.subject;
+  const message = req.body.messageHtml;
 
-// CONVERSATION ENDPOINTS
-app.post("/conversations/create", createConversation);
-app.get("/conversations", getAllConversations)
-app.get("/conversations/:conversation_id/messages", getConversationMessages)
+  const options = {
+    method: 'POST',
+    url: 'https://sandbox.api.mailtrap.io/api/send/' + inboxId,
+    headers: {
+      'Content-Type': 'application/json',
+      'Api-Token': apiToken
+    },
+    data: {
+      attachments: [],
+      to: [{email: 'john_doe@example.com', name: 'John Doe'}],
+      from: {email: 'email@previewer.com', name: 'Email Previewer'},
+      headers: {'X-Message-Source': 'dev.mydomain.com'},
+      subject: subject,
+      html: message,
+      custom_variables: {},
+      category: 'API Test'
+    }
+  };
+  
+  axios.request(options).then(function (response) {
+    console.log(response.status)
+    return res.end();
+  }).catch(function (error) {
+    console.log(error)
+    return res.status(error.status || 500);
+  });
+});
 
-// SEND A MESSAGE
-app.post("/conversations/:conversation_id/messages/create", addMessageToConversation)
-
-server.listen(3000);
+server.listen(5001);

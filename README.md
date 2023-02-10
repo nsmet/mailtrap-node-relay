@@ -1,4 +1,13 @@
-# Chat backend with Supabase & Socket.io
-We wrote an extensive article on how to create a Supabase / Node backend for your chat applications. 
+# Easy email testing with Mailtrap
 
-Read all about it on [dev.to](https://dev.to/nsmet/chat-backend-with-supabase-socketio-55nn)
+## How to
+POST to http://todo.com/mailtrap
+
+```
+body: {
+    inboxId: string, // Mailtrap inbox ID (visible in the URL of mailtrap)
+    apiToken: string, // Mailtrap API token
+    subject: string,
+    messageHtml: string // HTML
+}
+```
